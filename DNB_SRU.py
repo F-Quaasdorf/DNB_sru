@@ -48,21 +48,14 @@ def parse_record(record):
         
     def multi_extract_text(xpath_query):
         return [elem.text for elem in xml.xpath(xpath_query, namespaces=ns)] or ["N.N."]
-
-    idn = extract_text("marc:controlfield[@tag='001']")
-    title = extract_text("marc:datafield[@tag='245']/marc:subfield[@code='a']")
-    author = extract_text("marc:datafield[@tag='100']/marc:subfield[@code='a']")
-    ort = multi_extract_text("marc:datafield[@tag='264']/marc:subfield[@code='a']")
-    jahr = extract_text("marc:datafield[@tag='264']/marc:subfield[@code='c']")
-    sprache = extract_text("marc:datafield[@tag='041']/marc:subfield[@code='a']")
-
+    
     meta_dict = {
-        "IDN": idn,
-        "Titel": title,
-        "Verfasser": author,
-        "Ort": ort,
-        "Jahr": jahr,
-        "Sprache": sprache
+        "IDN": extract_text("marc:controlfield[@tag='001']"),
+        "Titel": extract_text("marc:datafield[@tag='245']/marc:subfield[@code='a']"),
+        "Verfasser": extract_text("marc:datafield[@tag='100']/marc:subfield[@code='a']"),
+        "Ort": multi_extract_text("marc:datafield[@tag='264']/marc:subfield[@code='a']"),
+        "Jahr": extract_text("marc:datafield[@tag='264']/marc:subfield[@code='c']"),
+        "Sprache": extract_text("marc:datafield[@tag='041']/marc:subfield[@code='a']")
     }
 
     return meta_dict
@@ -71,7 +64,7 @@ def to_df(records):
     return pd.DataFrame(records)
 
 
-records = dnb_sru("tit=Kursachsen und das Ende")
+records = dnb_sru("idn=1207424870") #jhr: Jahr, tit: Titel
 parsed_records = [parse_record(record) for record in records]
 df = to_df(parsed_records)
 
