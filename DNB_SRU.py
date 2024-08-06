@@ -16,9 +16,15 @@ def dnb_sru(query):
     
     records = []
     i = 1
+    first_request = True
+    
     while True:
         params.update({'startRecord': i})
         req = requests.get(base_url, params=params)
+        
+        if first_request:
+            print(req.url)
+            first_request = False
         
         if req.status_code != 200:
             print(f"Error: Failed to fetch records. Status code {req.status_code}")
@@ -35,7 +41,7 @@ def dnb_sru(query):
             break
         
         i += 100
-    print(req.url)
+    
     return records
 
 def parse_record(record):
@@ -64,7 +70,7 @@ def to_df(records):
     return pd.DataFrame(records)
 
 
-records = dnb_sru("idn=1207424870") #jhr: Jahr, tit: Titel
+records = dnb_sru("tit=kursachsen und das ende") #jhr: Jahr, tit: Titel
 parsed_records = [parse_record(record) for record in records]
 df = to_df(parsed_records)
 
