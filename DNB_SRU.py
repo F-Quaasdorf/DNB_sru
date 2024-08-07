@@ -70,7 +70,7 @@ def to_df(records):
     return pd.DataFrame(records)
 
 
-records = dnb_sru("tit=kursachsen und das ende") #jhr: Jahr, tit: Titel
+records = dnb_sru("tit=kursachsen und das ende") #jhr: Jahr, tit: Titel, isbn: ISBN
 parsed_records = [parse_record(record) for record in records]
 df = to_df(parsed_records)
 
