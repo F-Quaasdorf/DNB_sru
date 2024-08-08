@@ -4,6 +4,7 @@ from lxml import etree
 from bs4 import BeautifulSoup as soup
 import pandas as pd
 
+# Builds the SRU-string and returns the fetched records
 def dnb_sru(query):
     base_url = "https://services.dnb.de/sru/dnb"
     params = {
@@ -22,6 +23,7 @@ def dnb_sru(query):
         params.update({'startRecord': i})
         req = requests.get(base_url, params=params)
         
+        # Prints SRU-URL
         if first_request:
             print(req.url)
             first_request = False
@@ -44,14 +46,17 @@ def dnb_sru(query):
     
     return records
 
+# Parses the records and returns a dictionary of the fetched fields and elements (e.g. publication year)
 def parse_record(record):
     ns = {"marc": "http://www.loc.gov/MARC21/slim"}
     xml = etree.fromstring(unicodedata.normalize("NFC", str(record)))
-
+    
+    # Returns the first element of a field
     def extract_text(xpath_query):
         elements = xml.xpath(xpath_query, namespaces=ns)
         return elements[0].text if elements else 'N.N.'
-        
+    
+    # Returns multiple elements from a field as a list (e.g. places of publication)    
     def multi_extract_text(xpath_query):
         return [elem.text for elem in xml.xpath(xpath_query, namespaces=ns)] or ["N.N."]
     
@@ -69,8 +74,11 @@ def parse_record(record):
 def to_df(records):
     return pd.DataFrame(records)
 
+# Put the query here, e.g. 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN
+# Concatenate different search terms with 'and'
+records = dnb_sru("tit=kursachsen und das ende") 
 
-records = dnb_sru("tit=kursachsen und das ende") #jhr: Jahr, tit: Titel, isbn: ISBN
+# Parses the records
 parsed_records = [parse_record(record) for record in records]
 df = to_df(parsed_records)
 
