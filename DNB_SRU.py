@@ -59,7 +59,7 @@ def parse_record(record):
     # Returns multiple elements from a field as a list (e.g. places of publication)    
     def multi_extract_text(xpath_query):
         return [elem.text for elem in xml.xpath(xpath_query, namespaces=ns)] or ["N.N."]
-    
+        
     meta_dict = {
         "IDN": extract_text("marc:controlfield[@tag='001']"),
         "Titel": extract_text("marc:datafield[@tag='245']/marc:subfield[@code='a']"),
@@ -75,7 +75,7 @@ def to_df(records):
     return pd.DataFrame(records)
 
 # Put the query here, e.g. 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN
-# Concatenate different search terms with 'and'
+# Concatenate with 'and'
 records = dnb_sru("tit=kursachsen und das ende") 
 
 # Parses the records
