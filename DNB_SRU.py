@@ -46,23 +46,24 @@ def dnb_sru(query):
     
     return records
 
-# Parses the records and returns a dictionary of the fetched fields and elements (e.g. publication year)
+# Parse the records and returns a dictionary of the fetched fields and elements (e.g. publication year)
 def parse_record(record):
     ns = {"marc": "http://www.loc.gov/MARC21/slim"}
     xml = etree.fromstring(unicodedata.normalize("NFC", str(record)))
     
-    # Returns the first element of a field
+    # Return first element of a field
     def extract_text(xpath_query):
         elements = xml.xpath(xpath_query, namespaces=ns)
         return elements[0].text if elements else 'N.N.'
     
-    # Returns multiple elements from a field as a list (e.g. places of publication)    
+    # Returns multiple elements from a field (e.g. places of publication)    
     def multi_extract_text(xpath_query):
-        return [elem.text for elem in xml.xpath(xpath_query, namespaces=ns)] or ["N.N."]
+        return ", ".join([elem.text for elem in xml.xpath(xpath_query, namespaces=ns)]) or "N.N."
         
     meta_dict = {
         "IDN": extract_text("marc:controlfield[@tag='001']"),
         "Titel": extract_text("marc:datafield[@tag='245']/marc:subfield[@code='a']"),
+        "Untertitel": extract_text("marc:datafield[@tag='245']/marc:subfield[@code='b']"),
         "Verfasser": extract_text("marc:datafield[@tag='100']/marc:subfield[@code='a']"),
         "Ort": multi_extract_text("marc:datafield[@tag='264']/marc:subfield[@code='a']"),
         "Jahr": extract_text("marc:datafield[@tag='264']/marc:subfield[@code='c']"),
@@ -74,11 +75,11 @@ def parse_record(record):
 def to_df(records):
     return pd.DataFrame(records)
 
-# Put the query here, e.g. 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN
+# Query: 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN
 # Concatenate with 'and'
-records = dnb_sru("tit=kursachsen und das ende") 
+records = dnb_sru("tit=Kursachsen und das Ende") 
 
-# Parses the records
+# Parse records
 parsed_records = [parse_record(record) for record in records]
 df = to_df(parsed_records)
 
