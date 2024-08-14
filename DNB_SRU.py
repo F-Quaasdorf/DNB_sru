@@ -65,9 +65,10 @@ def parse_record(record):
         "Titel": extract_text("marc:datafield[@tag='245']/marc:subfield[@code='a']"),
         "Untertitel": extract_text("marc:datafield[@tag='245']/marc:subfield[@code='b']"),
         "Verfasser": extract_text("marc:datafield[@tag='100']/marc:subfield[@code='a']"),
+        "Verlag": multi_extract_text("marc:datafield[@tag='264']/marc:subfield[@code='b']"),
         "Ort": multi_extract_text("marc:datafield[@tag='264']/marc:subfield[@code='a']"),
         "Jahr": extract_text("marc:datafield[@tag='264']/marc:subfield[@code='c']"),
-        "Sprache": extract_text("marc:datafield[@tag='041']/marc:subfield[@code='a']")
+        "Sprache": multi_extract_text("marc:datafield[@tag='041']/marc:subfield[@code='a']")
     }
 
     return meta_dict
