@@ -23,7 +23,7 @@ def dnb_sru(query):
         params.update({'startRecord': i})
         req = requests.get(base_url, params=params)
         
-        # Prints SRU-URL
+        # Print SRU-URL
         if first_request:
             print(req.url)
             first_request = False
@@ -56,7 +56,7 @@ def parse_record(record):
         elements = xml.xpath(xpath_query, namespaces=ns)
         return elements[0].text if elements else 'N.N.'
     
-    # Returns multiple elements from a field (e.g. places of publication)    
+    # Return multiple elements from a field (e.g. places of publication)    
     def multi_extract_text(xpath_query):
         return ", ".join([elem.text for elem in xml.xpath(xpath_query, namespaces=ns)]) or "N.N."
         
