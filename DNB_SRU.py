@@ -79,7 +79,7 @@ def to_df(records):
 
 # Query: 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN, 'aunidref' for GND-ID
 # Concatenate with 'and'
-records = dnb_sru("aunidref=118500775") 
+records = dnb_sru("tit='Kursachsen und das Alte Reich") 
 
 # Parse records
 parsed_records = [parse_record(record) for record in records]
