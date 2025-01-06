@@ -68,7 +68,8 @@ def parse_record(record):
         "Verlag": multi_extract_text("marc:datafield[@tag='264']/marc:subfield[@code='b']"),
         "Ort": multi_extract_text("marc:datafield[@tag='264']/marc:subfield[@code='a']"),
         "Jahr": extract_text("marc:datafield[@tag='264']/marc:subfield[@code='c']"),
-        "Sprache": multi_extract_text("marc:datafield[@tag='041']/marc:subfield[@code='a']")
+        "Sprache": multi_extract_text("marc:datafield[@tag='041']/marc:subfield[@code='a']"),
+        "Weitere Angaben": extract_text("marc:datafield[@tag='678']/marc:subfield[@code='b']")
     }
 
     return meta_dict
@@ -76,9 +77,9 @@ def parse_record(record):
 def to_df(records):
     return pd.DataFrame(records)
 
-# Query: 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN
+# Query: 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN, 'aunidref' for GND-ID
 # Concatenate with 'and'
-records = dnb_sru("tit=Kursachsen und das Ende") 
+records = dnb_sru("aunidref=118500775") 
 
 # Parse records
 parsed_records = [parse_record(record) for record in records]
