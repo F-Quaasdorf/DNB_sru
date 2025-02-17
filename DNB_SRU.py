@@ -50,7 +50,7 @@ def dnb_sru(query):
 def parse_record(record):
     ns = {"marc": "http://www.loc.gov/MARC21/slim"}
     xml = etree.fromstring(unicodedata.normalize("NFC", str(record)))
-    
+    #TODO: Auf multi_extract reduzieren
     # Return first element of a field
     def extract_text(xpath_query):
         elements = xml.xpath(xpath_query, namespaces=ns)
@@ -77,9 +77,9 @@ def parse_record(record):
 def to_df(records):
     return pd.DataFrame(records)
 
-# Query: 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN, 'aunidref' for GND-ID
+# Query: 'tit' for title, 'jhr' for publication year, 'isbn' for, well, the ISBN, 'aunidref' or 'betref' for GND-ID
 # Concatenate with 'and'
-records = dnb_sru("tit='Kursachsen und das Ende'") 
+records = dnb_sru("per=anonym") 
 
 # Parse records
 parsed_records = [parse_record(record) for record in records]
